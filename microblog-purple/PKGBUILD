@@ -1,0 +1,52 @@
+
+_pkg=microblog-purple
+pkgname=$_pkg-git
+pkgver=git
+pkgrel=1
+arch=('any')
+pkgdesc="Libpurple (Pidgin) plug-in supporting microblog services like Twitter api 1.1"
+# _cat='somsak'
+_cat='fr0nk'
+_fqdn='github.com'
+license=('GPL v2')
+
+makedepends=('git')
+depends=('libpurple' 'json-glib')
+options=(!staticlibs)
+
+conflicts=($_pkg $_pkg.git)
+provides=($_pkg $_pkg.git)
+replaces=($_pkg $_pkg.git)
+
+_gitroot="git://$_fqdn/$_cat"
+_gitname=$_pkg.git
+
+pkgver() {
+    date +%Y%m%d
+}
+
+build() {
+
+	if [ -d $_pkg ] ; then
+		msg "cd $_gitname && git pull origin"
+		cd $_gitname && git pull origin
+		msg "The local files are updated."
+	else
+		msg "git clone $_gitroot/$_gitname"
+		git clone $_gitroot/$_gitname
+		msg "The local files are updated."
+	fi
+
+	cd $srcdir/$_pkg
+
+	# Change default buffer
+	sed -i 's/TW_MAXBUFF 51200/TW_MAXBUFF 102400/' microblog/twitter.h
+	make
+
+}
+
+package() {
+	cd $srcdir/$_pkg
+	make DESTDIR=$pkgdir install
+}
+

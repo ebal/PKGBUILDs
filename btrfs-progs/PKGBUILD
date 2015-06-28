@@ -1,0 +1,54 @@
+
+_pkg=btrfs-progs
+pkgname=$_pkg-git
+pkgver=git
+pkgrel=1
+arch=('any')
+pkgdesc="btrfs filesystem utilities"
+_cat='mason'
+_fqdn='git.kernel.org'
+url="http://$_fqdn/cgit/linux/kernel/git/$_cat/$_pkg.git"
+license=('GPL v2')
+
+makedepends=('git')
+depends=('glibc' 'e2fsprogs' 'lzo2' 'asciidoc' 'xmlto')
+options=(!staticlibs)
+
+conflicts=($_pkg $_pkg.git)
+provides=($_pkg $_pkg.git)
+replaces=($_pkg $_pkg.git)
+
+_gitroot="git://$_fqdn/pub/scm/linux/kernel/git/$_cat"
+_gitname=$_pkg.git
+
+pkgver() {
+    date +%Y%m%d
+}
+
+build() {
+
+	if [ -d $_pkg ] ; then
+		msg "cd $_gitname && git pull origin"
+		cd $_gitname && git pull origin
+		msg "The local files are updated."
+	else
+		msg "git clone $_gitroot/$_gitname"
+		git clone $_gitroot/$_gitname
+		msg "The local files are updated."
+	fi
+
+	cd $srcdir/$_pkg
+	
+	./autogen.sh
+
+	./configure --prefix=/usr
+
+	make
+
+}
+
+package() {
+	cd $srcdir/$_pkg
+	make prefix=$pkgdir/usr install
+}
+

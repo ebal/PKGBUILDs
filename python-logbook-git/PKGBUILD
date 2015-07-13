@@ -1,0 +1,28 @@
+_pkg=logbook
+pkgname=python-$_pkg-git
+pkgver=git
+pkgrel=1
+arch=("any")
+pkgdesc="Logging system for Python that aims to replace the standard library's logging module"
+url="https://pythonhosted.org/Logbook"
+license=("BSD")
+makedepends=("git")
+depends=("python-six>=1.4.0")
+
+conflicts=(python-${_pkg})
+provides=(python-${_pkg})
+replaces=(python-${_pkg})
+
+source=("${_pkg}::git+https://github.com/mitsuhiko/${_pkg}.git")
+sha256sums=("SKIP")
+
+pkgver() {
+    date +%Y%m%d
+}
+
+package() {
+	cd $srcdir/$_pkg
+    python setup.py install --root="$pkgdir" --prefix="/usr" || return 1
+}
+
+# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4

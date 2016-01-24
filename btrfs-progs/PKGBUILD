@@ -1,3 +1,6 @@
+# Contributor: Evaggelos Balaskas < Evaggelos _AT_ Balaskas _DOT_ GR >
+# Maintainer:  Evaggelos Balaskas < Evaggelos _AT_ Balaskas _DOT_ GR >
+
 
 _pkg=btrfs-progs
 pkgname=$_pkg-git
@@ -18,6 +21,7 @@ conflicts=($_pkg $_pkg.git)
 provides=($_pkg $_pkg.git)
 replaces=($_pkg $_pkg.git)
 
+# git://git.kernel.org/pub/scm/linux/kernel/git/mason/btrfs-progs.git
 _gitroot="git://$_fqdn/pub/scm/linux/kernel/git/$_cat"
 _gitname=$_pkg.git
 

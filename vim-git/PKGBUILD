@@ -1,0 +1,77 @@
+# Contributor: Evaggelos Balaskas < Evaggelos _AT_ Balaskas _DOT_ GR >
+# Maintainer:  Evaggelos Balaskas < Evaggelos _AT_ Balaskas _DOT_ GR >
+
+_pkg=vim
+pkgname=$_pkg-git
+pkgver=git
+pkgrel=1
+pkgdesc='Vi Improved, a highly configurable, improved version of the vi text editor'
+url="http://www.vim.org"
+
+arch=('x86_64')
+license=('custom:vim')
+backup=('etc/vimrc')
+
+makedepends=( 'git')
+
+conflicts=('vi' 'vim-minimal' 'vim-python3' 'vim-runtime')
+
+source=(${pkgname}::git+https://github.com/vim/vim.git
+        vimrc
+)
+sha256sums=('SKIP'
+            'e4741a1ae0bb372576e3f36f0b96829abf8956a70dbf25d9968f8aa93e3ad98e'
+)
+
+pkgver() {
+    date +%Y%m%d
+}
+
+prepare() {
+        cd $srcdir/$pkgname
+
+        # define the place for the global (g)vimrc file (set to /etc/vimrc)
+        sed -i 's|^.*\(#define SYS_.*VIMRC_FILE.*"\) .*$|\1|' src/feature.h
+        sed -i 's|^.*\(#define VIMRC_FILE.*"\) .*$|\1|' src/feature.h
+}
+
+build() {
+
+        cd $srcdir/$pkgname
+
+        ./configure \
+        --prefix=/usr \
+        --localstatedir=/var/lib/vim \
+        --with-features=huge \
+        --with-compiledby='Arch Linux' \
+        --enable-gpm \
+        --enable-acl \
+        --with-x=no \
+        --disable-gui \
+        --enable-multibyte \
+        --enable-cscope \
+        --disable-netbeans \
+        --enable-perlinterp \
+        --enable-pythoninterp \
+        --enable-python3interp \
+        --disable-rubyinterp \
+        --disable-luainterp
+
+        make
+}
+
+package() {
+
+        cd $srcdir/$pkgname
+        make -j1 VIMRCLOC=/etc DESTDIR="${pkgdir}" install
+
+       # license
+        install -Dm644 runtime/doc/uganda.txt \
+        "${pkgdir}"/usr/share/licenses/${pkgname}/license.txt
+        cd ../
+
+        # Install custom vimrc
+        install -Dm644 vimrc "${pkgdir}"/etc/vimrc
+}
+
+# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4

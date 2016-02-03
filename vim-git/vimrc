@@ -1,0 +1,22 @@
+" Use Vim defaults instead of 100% vi compatibility
+set nocompatible
+
+" replace F1 with my comment marker
+:map <F1> :r! echo "\# ${USER}, `date -R`"<CR>
+
+syntax on
+
+set cindent
+
+set shiftwidth=4
+set softtabstop=4
+set tabstop=4
+set noexpandtab
+
+set autoindent
+set smartindent
+
+set modeline
+
+set wildmenu
+set laststatus=2

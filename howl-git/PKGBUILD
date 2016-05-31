@@ -1,0 +1,36 @@
+# Contributor: Evaggelos Balaskas < Evaggelos _AT_ Balaskas _DOT_ GR >
+# Maintainer:  Evaggelos Balaskas < Evaggelos _AT_ Balaskas _DOT_ GR >
+
+_pkg=howl
+pkgname=$_pkg-git
+pkgver=any
+pkgrel=1
+arch=('any')
+pkgdesc='General purpose, light-weight customizable editor'
+
+url="http://howl.io"
+license=("MIT")
+
+depends=('gtk3' 'desktop-file-utils')
+
+conflicts=($_pkg $_pkg.git)
+provides=($_pkg $_pkg.git)
+replaces=($_pkg $_pkg.git)
+
+source=("${pkgname}::git+https://github.com/howl-editor/howl/")
+sha256sums=(SKIP)
+
+pkgver() {
+    date +%Y%m%d
+}
+
+build() {
+    make -j 4 -C $srcdir/$pkgname/src
+}
+
+package() {
+    make DESTDIR=$pkgdir PREFIX=/usr -C $srcdir/$pkgname/src install
+}  
+
+# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
+

@@ -1,0 +1,40 @@
+# Contributor: Evaggelos Balaskas < evaggelos _AT_ balaskas _DOT_ gr >
+# Maintainer:  Evaggelos Balaskas < evaggelos _AT_ balaskas _DOT_ gr >
+
+_pkg=duperemove
+pkgname=$_pkg-git
+pkgver=git
+pkgrel=1
+arch=('any')
+pkgdesc="Tools for deduping file systems"
+url="https://github.com/markfasheh/duperemove"
+
+license=('GPL v2')
+
+makedepends=('git')
+depends=('btrfs-progs')
+options=(!staticlibs)
+
+conflicts=($_pkg $_pkg.git)
+provides=($_pkg $_pkg.git)
+replaces=($_pkg $_pkg.git)
+
+
+source=("${pkgname}::git+https://github.com/markfasheh/duperemove.git")
+sha256sums=('SKIP')
+
+pkgver() {
+	date +%Y%m%d
+}
+
+build() {
+	cd ${srcdir}/${pkgname}
+	sed -i -e 's/sbin/bin/g' Makefile
+	make
+}
+
+package() {
+	cd ${srcdir}/${pkgname}
+	make PREFIX=${pkgdir}/usr install
+}
+# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4

@@ -1,0 +1,38 @@
+# Maintainer:  Evaggelos Balaskas <evaggelos _AT_ balaskas _DOT_ gr>
+# Contributor: Evaggelos Balaskas <evaggelos _AT_ balaskas _DOT_ gr>
+
+pkgname=usbguard
+pkgver=0.7.2
+pkgrel=1
+pkgdesc="USBGuard is a software framework for implementing USB device authorization policies"
+arch=('x86_64')
+license=('GPL2')
+url="https://usbguard.github.io/"
+source=("https://github.com/USBGuard/${pkgname}/releases/download/${pkgname}-${pkgver}/${pkgname}-${pkgver}.tar.gz")
+makedepends=("libxml2" "libxslt" "asciidoctor")
+depends=("libqb" "libsodium" "audit" "protobuf" "dbus-glib" "polkit")
+# depends=( "libgcrypt" )
+optdepends=(
+        "aspell: spell checking of documentation related files"
+        "bash-completion: Programmable completion functions for bash"
+        "qt5-svg: Classes for displaying the contents of SVG files"
+        "qt5-tools: A cross-platform application and UI framework (Development Tools, QtHelp)"
+        "qt5-base: A cross-platform application and UI framework"
+)
+backup=(
+        "etc/usbguard/rules.conf"
+        "etc/usbguard/usbguard-daemon.conf"
+)
+build() {
+    cd ${srcdir}/${pkgname}-${pkgver}
+    ./configure --prefix=/usr --sysconfdir=/etc --localstatedir=/var --sys=/etc -sbindir=/usr/bin --libdir=/usr/lib \
+        --with-crypto-library=sodium \
+        --enable-systemd --with-bundled-catch --with-bundled-pegtl
+    make
+}
+package(){
+    cd ${srcdir}/${pkgname}-${pkgver}
+    make DESTDIR=${pkgdir} install
+}
+sha256sums=('5bd3e5219c590c3ae27b21315bd10b60e823cef64e5deff3305ff5b4087fc2d6')
+

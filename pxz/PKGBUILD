@@ -15,7 +15,7 @@ makedepends=('git')
 
 provides=(${pkgname})
 conflicts=(${_pkg})
-replaces=(${pkgname})
+replaces=(${_pkg})
 
 _gitroot="https://github.com/jnovy/"
 _gitname=${_pkg}

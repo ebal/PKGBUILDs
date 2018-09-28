@@ -1,0 +1,65 @@
+# Maintainer:  Evaggelos Balaskas <evaggelos _AT_ balaskas _DOT_ gr>
+# Contributor: Evaggelos Balaskas <evaggelos _AT_ balaskas _DOT_ gr>
+
+_pkg=pxz
+pkgname=$_pkg-git
+pkgver=VERSION
+pkgrel=1
+pkgdesc="Parallel LZMA compressor using liblzma"
+arch=('x86_64')
+url="http://jnovy.fedorapeople.org/pxz/"
+license=('GPL2')
+
+depends=('xz')
+makedepends=('git')
+
+provides=(${pkgname})
+conflicts=(${_pkg})
+replaces=(${pkgname})
+
+_gitroot="https://github.com/jnovy/"
+_gitname=${_pkg}
+
+prepare() {
+  if [ -d $_gitname ] ; then
+    msg "cd $_gitname && git pull origin"
+    cd $_gitname && git pull origin
+    msg "The local files are updated."
+  else
+    msg "git clone $_gitroot/$_gitname"
+    git clone $_gitroot/$_gitname
+    msg "The local files are updated."
+  fi
+}
+
+pkgver() {
+	egrep -r ^VERSION ${srcdir}/pxz/Makefile | cut -d'=' -f2
+}
+
+build() {
+
+	if [ -d $_gitname ] ; then
+		msg "cd $_gitname && git pull origin"
+		cd $_gitname && git pull origin
+		msg "The local files are updated."
+	else
+		msg "git clone $_gitroot/$_gitname"
+		git clone $_gitroot/$_gitname
+		msg "The local files are updated."
+	fi
+
+	cd $srcdir/$_pkg
+
+
+  cd "$srcdir/${pkgname%-git}"
+
+  make
+}
+
+package() {
+  cd "$srcdir/${pkgname%-git}"
+
+  make DESTDIR="$pkgdir" install
+}
+
+# vim:set ts=2 sw=2 et:

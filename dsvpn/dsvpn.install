@@ -1,0 +1,10 @@
+#!/bin/sh
+
+pkgname="dsvpn"
+
+post_install() {
+    mkdir -p "/etc/${pkgname}/"
+    if [ ! -f /etc/$pkgname/$pkgname.key ]; then
+        /usr/bin/dd if=/dev/urandom of=/etc/$pkgname/$pkgname.key count=1 bs=32
+    fi
+}

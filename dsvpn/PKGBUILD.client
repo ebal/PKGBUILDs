@@ -1,0 +1,56 @@
+# Maintainer:  Evaggelos Balaskas < evaggelos _AT_ balaskas _DOT_ gr >
+pkgname=dsvpn
+pkgdesc="A Dead Simple VPN - Client"
+
+pkgver=0.1.0
+pkgrel=1
+
+arch=('x86_64')
+license=('MIT')
+
+makedepends=(
+    'make'
+    'gcc'
+)
+depends=(
+    'iproute2'
+    'gawk'
+    'iptables'
+    'procps-ng'
+)
+
+url="https://github.com/jedisct1/$pkgname"
+
+source=(
+    "https://github.com/jedisct1/$pkgname/archive/$pkgver.tar.gz"
+    ${pkgname}_Client.service
+    dsvpn.install
+)
+
+sha256sums=(
+    '97bf922c957827b01123796c7089ad4c8b84f0ef6ae4f600ace21fe07598b46f'
+    '112b73c5cdf561cd88140ab1a726b6f1034c570228ec860ffcb651a84271548f'
+    '71e4188d07ab5e846df6982866f3a1449e03b11becaa1d74ccaf07ef98cb9ec6'
+)
+
+NoUpgrade=("etc/${pkgname}/${pkgname}.key")
+
+install='dsvpn.install'
+
+build() {
+    cd "${pkgname}-${pkgver}"
+    make
+}
+
+package() {
+    cd "${pkgname}-${pkgver}"
+    install -Dm644 "${srcdir}/${pkgname}_Client.service" \
+                   "${pkgdir}/usr/lib/systemd/system/${pkgname}.service"
+
+    install -Dm755 ${pkgname} "${pkgdir}/usr/bin/${pkgname}"
+
+    install -Dm644 LICENSE    "${pkgdir}/usr/share/licenses/${pkgname}/LICENSE"
+    install -Dm644 README.md  "${pkgdir}/usr/share/doc/${pkgname}/README.md"
+}
+
+# vim: sts=2 sw=2 ts=2 et

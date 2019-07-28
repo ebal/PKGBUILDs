@@ -1,0 +1,10 @@
+[Unit]
+Description=Dead Simple VPN - Client
+
+[Service]
+ExecStart=/usr/bin/dsvpn Client /etc/dsvpn/dsvpn.key 93.184.216.34 443 auto 10.8.0.2 10.8.0.254
+Restart=always
+RestartSec=15
+
+[Install]
+WantedBy=network.target

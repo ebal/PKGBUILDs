@@ -1,0 +1,45 @@
+# Contributor: Evaggelos Balaskas < evaggelos [_AT_] balaskas [_DOT_] gr >
+# Maintainer:  Evaggelos Balaskas < evaggelos [_AT_] balaskas [_DOT_] gr >
+
+_pkgname=synergy
+pkgname=${_pkgname}-core
+pkgver=1.11.1
+pkgrel=1
+pkgdesc="Open source core of Synergy, the keyboard and mouse sharing tool "
+url="https://symless.com/synergy"
+
+arch=('x86_64')
+license=('GPL2')
+
+makedepends=('cmake')
+depends=('libx11' 'libxtst' 'qt5-base' 'qt5-tools')
+
+source=(
+    https://github.com/symless/${pkgname}/archive/v${pkgver}-stable.tar.gz
+)
+
+sha256sums=('338e5fda0323f8c24259d8fc26e513bdc4f0f249bf66e9722953bb8e6311f88b')
+
+prepare() {
+    mkdir $pkgname-${pkgver}-stable/build
+}
+
+build() {
+    cd $pkgname-${pkgver}-stable/build
+    cmake -DCMAKE_INSTALL_PREFIX=/usr ..
+    make
+}
+
+package() {
+    cd $pkgname-${pkgver}-stable/build
+    make install DESTDIR=${pkgdir}
+
+    # Install config files
+    install -Dm 644 ../doc/${_pkgname}.conf* -t "${pkgdir}/etc"
+
+    # Install man files
+    install -Dm 644 ../doc/${_pkgname}c.man "${pkgdir}/usr/share/man/man1/${pkgname}c.1"
+    install -Dm 644 ../doc/${_pkgname}s.man "${pkgdir}/usr/share/man/man1/${pkgname}s.1"
+}
+
+# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
